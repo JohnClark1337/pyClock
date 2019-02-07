@@ -40,7 +40,7 @@ def clockChange():
 if __name__ == '__main__':
     mainWindow = tkinter.Tk()
     mainWindow.title("PyClock")
-    mainWindow.geometry("400x200")
+    mainWindow.geometry("400x260")
     timeType = 0
 
     mainWindow.columnconfigure(0, weight=5)
@@ -52,10 +52,16 @@ if __name__ == '__main__':
     clockFrame= tkinter.Frame(mainWindow)
     sideButtons = tkinter.Frame(mainWindow)
     bottomButtons=tkinter.Frame(mainWindow)
+    alarmBtnUpper = tkinter.Frame(mainWindow)
+    alarmFrame = tkinter.Frame(mainWindow)
+    alarmBtnLower = tkinter.Frame(mainWindow)
 
     clockFrame.grid(columnspan=2)
     sideButtons.grid(row=0, column=2)
-    bottomButtons.grid(row=1, columnspan=3)
+    alarmBtnUpper.grid(row=1, columnspan=2)
+    alarmFrame.grid(row=2, columnspan=2)
+    alarmBtnLower.grid(row=3, columnspan=2)
+    bottomButtons.grid(row=4, columnspan=3)
 
     #Store variable for AM/PM checkbox, also used with clockChanger()
 
@@ -73,7 +79,18 @@ if __name__ == '__main__':
     lblsb = tkinter.Label(sideButtons, text="Side Buttons here")
     lblbb = tkinter.Label(bottomButtons, text="Bottom Buttons here")
     btnExit = tkinter.Button(bottomButtons, text="Exit", command =mainWindow.destroy)
+    lblAlarm = tkinter.Label()
     chkAMPM = tkinter.Checkbutton(sideButtons, text = "AM/PM", variable = AMPMvar)
+    #lblAlarm = tkinter.Label(alarmFrame, text="00:00:00", background="white", foreground="red", font=fontClock)
+    lblAlarmH = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
+    lblAlarmM = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
+    lblAlarmS = tkinter.Label(alarmFrame, text="00", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
+    btnHUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
+    btnMUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
+    btnSUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
+    btnHDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
+    btnMDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
+    btnSDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
 
     #Add Labels and buttons to grid
 
@@ -82,6 +99,15 @@ if __name__ == '__main__':
     lblbb.grid(row=0, columnspan=3)
     btnExit.grid(row=1, column=3)
     chkAMPM.grid(row=1, column=0)
+    lblAlarmH.grid(row=0, column=0, sticky = 'NEWS')
+    lblAlarmM.grid(row=0, column=1, sticky = 'NEWS')
+    lblAlarmS.grid(row=0, column=2, sticky = 'NEWS')
+    btnHUPAlarm.grid(row=0, column=0)
+    btnMUPAlarm.grid(row=0, column=1)
+    btnSUPAlarm.grid(row=0, column=2)
+    btnHDownAlarm.grid(row=0, column=0)
+    btnMDownAlarm.grid(row=0, column=1)
+    btnSDownAlarm.grid(row=0, column=2)
 
     #Begin thread for ongoing clock
 
