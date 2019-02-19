@@ -1,6 +1,8 @@
 import tkinter
 import time
 import threading
+from tkinter import messagebox
+from functools import partial
 
 """
 Created by Jonathon Scofield
@@ -21,6 +23,39 @@ as AM/PM or 24 hour time.
 
 
 """
+def setAlarmClock(setting = 0, updown = 0):
+    hours = int(lblAlarmH["text"][0:2])
+    minutes = int(lblAlarmM["text"][0:2])
+    seconds = int(lblAlarmS["text"][0:2])
+    if setting == 1:
+        if ((hours + updown) >= 0) and ((hours + updown) < 24):
+            hours += updown
+        if hours <= 9:
+            lblAlarmH["text"] = "0" + str(hours) + " :"
+        else:
+            lblAlarmH["text"] = str(hours) + " :"
+    elif setting == 2:
+        if ((minutes + updown) >= 0) and ((minutes + updown) < 60):
+            minutes += updown
+        if minutes <= 9:
+            lblAlarmM["text"] ="0" + str(minutes) + " :"
+        else:
+            lblAlarmM["text"] = str(minutes) + " :"
+    elif setting == 3:
+        if ((seconds + updown) >= 0) and ((seconds + updown) < 60):
+            seconds += updown
+        if seconds <= 9:
+            lblAlarmS["text"] = "0" + str(seconds)
+        else:
+            lblAlarmS["text"] = str(seconds)
+    elif setting == 0:
+        at = [hours, minutes, seconds]
+        alarmTimes.append(at)
+
+
+
+def alarmClock():
+    messagebox.showinfo("Alarm!", "This is an alarm!")
 
 
 def clockChange():
@@ -33,7 +68,17 @@ def clockChange():
             lblclock.config(font=fontClockAP)
             currentTime = time.strftime("%I:%M:%S %p")
         lblclock.config(text=currentTime)
+        time.sleep(1)
 
+
+def acAlarm():
+    while True:
+        global alarmTimes
+        if len(alarmTimes) > 0:
+            lstAlarms.delete(0, tkinter.END)
+            for item in alarmTimes:
+                lstAlarms.insert(tkinter.END, item)
+        time.sleep(1)
 
 
 #Main thread, creation and implementation of gui elements
@@ -42,12 +87,15 @@ if __name__ == '__main__':
     mainWindow.title("PyClock")
     mainWindow.geometry("400x260")
     timeType = 0
-
+    alarmTimes = list(())
     mainWindow.columnconfigure(0, weight=5)
     mainWindow.columnconfigure(1, weight=5)
     mainWindow.columnconfigure(2, weight=10)
     mainWindow.rowconfigure(0, weight=5)
     mainWindow.rowconfigure(1, weight=10)
+    mainWindow.rowconfigure(2, weight=10)
+    mainWindow.rowconfigure(3, weight=10)
+    mainWindow.rowconfigure(4, weight=10)
 
     clockFrame= tkinter.Frame(mainWindow)
     sideButtons = tkinter.Frame(mainWindow)
@@ -70,35 +118,39 @@ if __name__ == '__main__':
 
     #Store clock fonts
 
-    fontClock = ('times', 50, 'bold')
+    fontClock = ('times', 35, 'bold')
     fontClockAP = ('times', 35, 'bold')
 
     #Create labels and buttons
 
-    lblclock = tkinter.Label(clockFrame, text="00:00:00", background="black", foreground="white", font=fontClock)
-    lblsb = tkinter.Label(sideButtons, text="Side Buttons here")
-    lblbb = tkinter.Label(bottomButtons, text="Bottom Buttons here")
+    lblclock = tkinter.Label(clockFrame, text="00:00:00", background="black", foreground="white", font=fontClock, pady=10, padx=5)
+    lblsb = tkinter.Label(sideButtons, text="Time Format:")
+    lblbb = tkinter.Label(bottomButtons, text="")
     btnExit = tkinter.Button(bottomButtons, text="Exit", command =mainWindow.destroy)
     lblAlarm = tkinter.Label()
     chkAMPM = tkinter.Checkbutton(sideButtons, text = "AM/PM", variable = AMPMvar)
+    lstAlarms = tkinter.Listbox(sideButtons)
+    btnsetAlarm = tkinter.Button(bottomButtons, text="Set Alarm", command=setAlarmClock)
     #lblAlarm = tkinter.Label(alarmFrame, text="00:00:00", background="white", foreground="red", font=fontClock)
-    lblAlarmH = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
-    lblAlarmM = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
-    lblAlarmS = tkinter.Label(alarmFrame, text="00", background="white", foreground="red", font=fontClockAP, pady=10, padx=5)
-    btnHUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
-    btnMUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
-    btnSUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx="30", padx=5)
-    btnHDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
-    btnMDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
-    btnSDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx="30", padx=5)
+    lblAlarmH = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=12)
+    lblAlarmM = tkinter.Label(alarmFrame, text="00 :", background="white", foreground="red", font=fontClockAP, pady=10, padx=12)
+    lblAlarmS = tkinter.Label(alarmFrame, text="00", background="white", foreground="red", font=fontClockAP, pady=10, padx=12)
+    btnHUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx=40, pady=5, command=partial(setAlarmClock, 1, 1))
+    btnMUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx=40, pady=5, command=partial(setAlarmClock, 2, 1))
+    btnSUPAlarm = tkinter.Button(alarmBtnUpper, text = "\u2227", padx=40, pady=5, command=partial(setAlarmClock, 3, 1))
+    btnHDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx=40, pady=5, command=partial(setAlarmClock, 1, -1))
+    btnMDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx=40, pady=5, command=partial(setAlarmClock, 2, -1))
+    btnSDownAlarm = tkinter.Button(alarmBtnLower, text = "\u2228", padx=40, pady=5, command=partial(setAlarmClock, 3, -1))
 
     #Add Labels and buttons to grid
 
     lblclock.grid()
     lblsb.grid(row=0, column=0)
     lblbb.grid(row=0, columnspan=3)
+    btnsetAlarm.grid(row=1, column=2)
     btnExit.grid(row=1, column=3)
     chkAMPM.grid(row=1, column=0)
+    lstAlarms.grid(row=1, column=2)
     lblAlarmH.grid(row=0, column=0, sticky = 'NEWS')
     lblAlarmM.grid(row=0, column=1, sticky = 'NEWS')
     lblAlarmS.grid(row=0, column=2, sticky = 'NEWS')
@@ -114,4 +166,8 @@ if __name__ == '__main__':
     timer1 = threading.Thread(target=clockChange)
     timer1.daemon = True
     timer1.start()
+
+    timer2 = threading.Thread(target=acAlarm)
+    timer2.daemon = True
+    timer2.start()
     mainWindow.mainloop()
