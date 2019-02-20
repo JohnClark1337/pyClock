@@ -51,11 +51,18 @@ def setAlarmClock(setting = 0, updown = 0):
     elif setting == 0:
         at = [hours, minutes, seconds]
         alarmTimes.append(at)
-
+    alarmClock()
 
 
 def alarmClock():
-    messagebox.showinfo("Alarm!", "This is an alarm!")
+    htime = int(time.strftime("%H"))
+    mtime = int(time.strftime("%M"))
+    stime = int(time.strftime("%S"))
+    global alarmTimes
+    for times in alarmTimes:
+        if times[0] == htime and times[1] == mtime and times[2] == stime:
+            messagebox.showinfo("ALARM!", "BEEP BEEP BEEP!")
+   
 
 
 def clockChange():
@@ -68,7 +75,8 @@ def clockChange():
             lblclock.config(font=fontClockAP)
             currentTime = time.strftime("%I:%M:%S %p")
         lblclock.config(text=currentTime)
-        time.sleep(1)
+        alarmClock()
+        time.sleep(.5)
 
 
 def acAlarm():
@@ -85,7 +93,7 @@ def acAlarm():
 if __name__ == '__main__':
     mainWindow = tkinter.Tk()
     mainWindow.title("PyClock")
-    mainWindow.geometry("400x260")
+    mainWindow.geometry("600x415")
     timeType = 0
     alarmTimes = list(())
     mainWindow.columnconfigure(0, weight=5)
